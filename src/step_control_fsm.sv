@@ -216,7 +216,11 @@ module step_control_fsm #(
                             hit_x_reg <= voxel_x_reg;  // Hit at CURRENT position
                             hit_y_reg <= voxel_y_reg;
                             hit_z_reg <= voxel_z_reg;
-                            face_reg  <= pipeline_face_id;  // CRITICAL: Latch face_id on hit!
+                            // On hit, report the face used to ENTER the current voxel.
+                            // face_reg is updated when we ADVANCE to the next voxel, so it
+                            // already corresponds to the entry face for voxel_*_reg.
+                            // Do NOT overwrite it with pipeline_face_id (which corresponds
+                            // to the next step out of the current voxel).
                         end
                         
                         if (step_counter >= max_steps_reg) begin
