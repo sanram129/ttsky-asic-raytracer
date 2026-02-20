@@ -1,56 +1,66 @@
 # Tiny Tapeout project information
 project:
-  title:        ""      # Project title
-  author:       ""      # Your name
+  title:        "ASIC Raytracer Core (DDA)"      # Project title
+  author:       "IEEE UofT ASIC"      # Your name
   discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  ""      # One line description of what your project does
-  language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
+  description:  "Voxel grid ray traversal engine (3D DDA) with simple register-file I/O"      # One line description of what your project does
+  language:     "SystemVerilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
   clock_hz:     0       # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.
   tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
-  top_module:  "tt_um_example"
+  top_module:  "tt_um_ieeeuoftasic_raytracer"
 
   # List your project's source files here.
   # Source files must be in ./src and you must list each source file separately, one per line.
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
-    - "project.v"
+    - "tt_um_ieeeuoftasic_raytracer.sv"
+    - "raytracer_top.sv"
+    - "voxel_raytracer_core.sv"
+    - "step_control_fsm.sv"
+    - "step_update.sv"
+    - "axis_choose.sv"
+    - "bounds_check.sv"
+    - "voxel_addr_map.sv"
+    - "voxel_ram.sv"
+    - "ray_job_if.sv"
+    - "scene_loader_if.sv"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
 pinout:
   # Inputs
-  ui[0]: ""
-  ui[1]: ""
-  ui[2]: ""
-  ui[3]: ""
-  ui[4]: ""
-  ui[5]: ""
-  ui[6]: ""
-  ui[7]: ""
+  ui[0]: "WR_DATA[0]"
+  ui[1]: "WR_DATA[1]"
+  ui[2]: "WR_DATA[2]"
+  ui[3]: "WR_DATA[3]"
+  ui[4]: "WR_DATA[4]"
+  ui[5]: "WR_DATA[5]"
+  ui[6]: "WR_DATA[6]"
+  ui[7]: "WR_DATA[7]"
 
   # Outputs
-  uo[0]: ""
-  uo[1]: ""
-  uo[2]: ""
-  uo[3]: ""
-  uo[4]: ""
-  uo[5]: ""
-  uo[6]: ""
-  uo[7]: ""
+  uo[0]: "RD_DATA[0]"
+  uo[1]: "RD_DATA[1]"
+  uo[2]: "RD_DATA[2]"
+  uo[3]: "RD_DATA[3]"
+  uo[4]: "RD_DATA[4]"
+  uo[5]: "RD_DATA[5]"
+  uo[6]: "RD_DATA[6]"
+  uo[7]: "RD_DATA[7]"
 
   # Bidirectional pins
-  uio[0]: ""
-  uio[1]: ""
-  uio[2]: ""
-  uio[3]: ""
-  uio[4]: ""
-  uio[5]: ""
-  uio[6]: ""
-  uio[7]: ""
+  uio[0]: "ADDR[0]"
+  uio[1]: "ADDR[1]"
+  uio[2]: "ADDR[2]"
+  uio[3]: "ADDR[3]"
+  uio[4]: "ADDR[4]"
+  uio[5]: "ADDR[5]"
+  uio[6]: "WR_STB"
+  uio[7]: "RD_STB"
 
 # Do not change!
 yaml_version: 6

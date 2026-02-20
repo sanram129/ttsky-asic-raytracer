@@ -23,18 +23,32 @@ async def test_project(dut):
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
 
-    dut._log.info("Test project behavior")
+    dut._log.info("Smoke test: wrapper register write/read")
 
-    # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
+    def pack_uio(addr: int, wr: int = 0, rd: int = 0) -> int:
+        return (addr & 0x3F) | ((wr & 1) << 6) | ((rd & 1) << 7)
 
-    # Wait for one clock cycle to see the output values
-    await ClockCycles(dut.clk, 1)
+    async def reg_write(addr: int, data: int):
+        dut.ui_in.value = data & 0xFF
+        dut.uio_in.value = pack_uio(addr, wr=1, rd=0)
+        await ClockCycles(dut.clk, 1)
+        dut.uio_in.value = pack_uio(addr, wr=0, rd=0)
+        await ClockCycles(dut.clk, 1)
 
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    assert dut.uo_out.value == 50
+    async def reg_read(addr: int) -> int:
+        # Latch read address
+        dut.uio_in.value = pack_uio(addr, wr=0, rd=1)
+        await ClockCycles(dut.clk, 1)
+        dut.uio_in.value = pack_uio(addr, wr=0, rd=0)
+        await ClockCycles(dut.clk, 1)
+        return int(dut.uo_out.value)
 
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
+    # Write and read back a job register byte
+    await reg_write(0x10, 0x2A)
+    val = await reg_read(0x10)
+    assert val == 0x2A, f"Expected 0x2A, got 0x{val:02X}"
+
+    # Read status register (should be well-defined)
+    status = await reg_read(0x30)
+    dut._log.info(f"Status0 (0x30) = 0x{status:02X}")
+
